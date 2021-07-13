@@ -51,7 +51,7 @@ fun Navigation() {
             )
             //val vm = hiltViewModel<RecipeDetailViewModel>() - > This also works - recent version
 
-            RecipeDetailScreen(recipeId = viewModel.recipeId.value)
+            RecipeDetailScreen(recipe = viewModel.recipe.value)
             // RecipeDetailScreen(recipeId = navBackStackEntry.arguments?.getInt("recipeId")) //Getting the argument
         }
     }

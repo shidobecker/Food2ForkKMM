@@ -5,29 +5,31 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import br.com.shido.food2forkkmm.android.di.Dummy
+import androidx.lifecycle.viewModelScope
+import br.com.shido.food2forkkmm.datasource.network.RecipeService
+import br.com.shido.food2forkkmm.domain.model.Recipe
+import br.com.shido.food2forkkmm.interactors.recipe_detail.DetailRecipe
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class RecipeDetailViewModel @Inject constructor(
     private val savedStateHandler: SavedStateHandle,
-    private val dummy: Dummy
+    private val detailRecipe: DetailRecipe
 ) : ViewModel() {
 
-    val recipeId: MutableState<Int?> = mutableStateOf(null)
+    val recipe: MutableState<Recipe?> = mutableStateOf(null)
 
     init {
         savedStateHandler.get<Int>("recipeId")?.let { recipeId ->
-            this.recipeId.value = recipeId
+             detailRecipe.execute(recipeId).onEach { data ->
+                 println(data.data)
+                 this.recipe.value = data.data
+             }.launchIn(viewModelScope)
         }
-
-        println(
-            "Recipe Detail View Model ${
-                dummy
-                    .description()
-            }"
-        )
     }
 
 }
